@@ -34,7 +34,7 @@ module Bronto
     # If a symbol is passed in, it is converted to "method_plural_class_name" (e.g., :read => read_lists). A string
     # method is used as-is.
     # The message is a hash and becomes the body of the SOAP request
-    def self.request(method, message = {})
+    def self.request(method, message = {}, api_key = nil)
       api_key = api_key || self.api_key
 
       method = "#{method}_#{plural_class_name}" if method.is_a? Symbol
@@ -96,7 +96,7 @@ module Bronto
     def self.find(filter = Bronto::Filter.new, page_number = 1, api_key = nil)
       api_key = api_key || self.api_key
 
-      resp = request(:read, { filter: filter.to_hash, page_number: page_number })
+      resp = request(:read, { filter: filter.to_hash, page_number: page_number }, api_key)
 
       Array.wrap(resp[:return]).map { |hash| new(hash) }
     end
@@ -111,7 +111,7 @@ module Bronto
       objs = objs.flatten
       api_key = objs.first.is_a?(String) ? objs.shift : self.api_key
 
-      resp = request(:add, {plural_class_name => objs.map(&:to_hash)})
+      resp = request(:add, {plural_class_name => objs.map(&:to_hash)}, api_key)
 
       objs.each { |o| o.errors.clear }
 

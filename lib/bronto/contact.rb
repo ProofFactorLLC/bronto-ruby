@@ -13,7 +13,7 @@ module Bronto
       body[:fields] = Array.wrap(fields).map { |f| f.is_a?(Bronto::Field) ? f.id : f } if Array(fields).length > 0
       body[:include_lists] = include_lists
 
-      resp = request(:read, body)
+      resp = request(:read, body, api_key)
 
       Array.wrap(resp[:return]).map { |hash| new(hash) }
     end
